@@ -19,63 +19,89 @@ import PageContainer from "../../components/common/PageContainer";
 export default function Crud() {
   const [vista, setVista] = useState("crear");
 
-  const [usuarios, setUsuarios] = useState([
-    { nombre: "Juan", correo: "juan@test.com" },
-    { nombre: "Luz", correo: "luz@test.com" }
+  const [productos, setProductos] = useState([
+    {
+      nombre: "Laptop",
+      descripcion: "Laptop HP 8GB RAM",
+      precio: "12000",
+      cantidad: "5"
+    },
+    {
+      nombre: "Mouse",
+      descripcion: "Mouse inalámbrico",
+      precio: "350",
+      cantidad: "20"
+    }
   ]);
 
   const [nombre, setNombre] = useState("");
-  const [correo, setCorreo] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [precio, setPrecio] = useState("");
+  const [cantidad, setCantidad] = useState("");
   const [editando, setEditando] = useState(null);
 
   const limpiar = () => {
     setNombre("");
-    setCorreo("");
+    setDescripcion("");
+    setPrecio("");
+    setCantidad("");
     setEditando(null);
   };
 
   const guardar = () => {
-    if (!nombre || !correo) {
+    if (!nombre || !descripcion || !precio || !cantidad) {
       alert("Completa todos los campos");
       return;
     }
 
-    setUsuarios([...usuarios, { nombre, correo }]);
+    setProductos([
+      ...productos,
+      { nombre, descripcion, precio, cantidad }
+    ]);
+
     limpiar();
-    alert("Registro creado");
+    alert("Producto agregado");
   };
 
   const cargarEditar = (index) => {
-    setNombre(usuarios[index].nombre);
-    setCorreo(usuarios[index].correo);
+    const producto = productos[index];
+
+    setNombre(producto.nombre);
+    setDescripcion(producto.descripcion);
+    setPrecio(producto.precio);
+    setCantidad(producto.cantidad);
+
     setEditando(index);
     setVista("editar");
   };
 
   const actualizar = () => {
-    if (!nombre || !correo) {
-      alert("Completa todos los campos");
-      return;
-    }
+    const copia = [...productos];
 
-    const copia = [...usuarios];
-    copia[editando] = { nombre, correo };
-    setUsuarios(copia);
+    copia[editando] = {
+      nombre,
+      descripcion,
+      precio,
+      cantidad
+    };
+
+    setProductos(copia);
 
     limpiar();
     setVista("consultar");
-    alert("Registro actualizado");
+
+    alert("Producto actualizado");
   };
 
   const eliminar = (index) => {
-    if (window.confirm("¿Deseas eliminar este registro?")) {
-      setUsuarios(usuarios.filter((_, i) => i !== index));
-      alert("Registro eliminado");
+    if (window.confirm("¿Deseas eliminar este producto?")) {
+      setProductos(productos.filter((_, i) => i !== index));
+      alert("Producto eliminado");
     }
   };
 
   return (
-    <PageContainer title="Sistema CRUD">
+    <PageContainer title="Sistema CRUD de Productos">
       <Box sx={{ mb: 4, display: "flex", gap: 2, flexWrap: "wrap" }}>
         <Button variant="contained" onClick={() => setVista("crear")}>
           Crear
@@ -89,7 +115,11 @@ export default function Crud() {
           Editar
         </Button>
 
-        <Button variant="contained" color="error" onClick={() => setVista("eliminar")}>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => setVista("eliminar")}
+        >
           Eliminar
         </Button>
       </Box>
@@ -98,7 +128,7 @@ export default function Crud() {
         <Card>
           <CardContent>
             <Typography variant="h6">
-              {vista === "crear" ? "Crear Registro" : "Editar Registro"}
+              {vista === "crear" ? "Registrar Producto" : "Editar Producto"}
             </Typography>
 
             <Grid container spacing={2} mt={1}>
@@ -114,9 +144,27 @@ export default function Crud() {
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
-                  label="Correo"
-                  value={correo}
-                  onChange={(e) => setCorreo(e.target.value)}
+                  label="Descripción"
+                  value={descripcion}
+                  onChange={(e) => setDescripcion(e.target.value)}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Precio"
+                  value={precio}
+                  onChange={(e) => setPrecio(e.target.value)}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Cantidad"
+                  value={cantidad}
+                  onChange={(e) => setCantidad(e.target.value)}
                 />
               </Grid>
 
@@ -136,22 +184,29 @@ export default function Crud() {
       {(vista === "consultar" || vista === "eliminar") && (
         <Card>
           <CardContent>
-            <Typography variant="h6">Lista de Registros</Typography>
+            <Typography variant="h6">
+              Lista de Productos
+            </Typography>
 
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell>Nombre</TableCell>
-                  <TableCell>Correo</TableCell>
+                  <TableCell>Descripción</TableCell>
+                  <TableCell>Precio</TableCell>
+                  <TableCell>Cantidad</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
 
               <TableBody>
-                {usuarios.map((usuario, index) => (
+                {productos.map((producto, index) => (
                   <TableRow key={index}>
-                    <TableCell>{usuario.nombre}</TableCell>
-                    <TableCell>{usuario.correo}</TableCell>
+                    <TableCell>{producto.nombre}</TableCell>
+                    <TableCell>{producto.descripcion}</TableCell>
+                    <TableCell>${producto.precio}</TableCell>
+                    <TableCell>{producto.cantidad}</TableCell>
+
                     <TableCell>
                       <Button
                         onClick={() => cargarEditar(index)}
