@@ -101,7 +101,7 @@ export default function Crud() {
   };
 
   return (
-    <PageContainer title="Sistema CRUD de Productos">
+    <PageContainer title="CRUD VERSION NUEVA">
       <Box sx={{ mb: 4, display: "flex", gap: 2, flexWrap: "wrap" }}>
         <Button variant="contained" onClick={() => setVista("crear")}>
           Crear
